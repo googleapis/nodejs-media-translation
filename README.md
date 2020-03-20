@@ -55,18 +55,18 @@ npm install @google-cloud/media-translation
 ### Using the client library
 
 ```javascript
-  // Imports the Google Cloud client library
-  const {
-    SpeechTranslationServiceClient,
-  } = require('@google-cloud/media-translation');
+// Imports the Google Cloud client library
+const {
+  SpeechTranslationServiceClient,
+} = require('@google-cloud/media-translation');
 
-  // Creates a client
-  const translate = new SpeechTranslationServiceClient();
+// Creates a client
+const translate = new SpeechTranslationServiceClient();
 
-  // parent = 'projects/my-project', // Project to list dashboards for.
+// parent = 'projects/my-project', // Project to list dashboards for.
 
-  // TODO: add an actual sample.
-  console.info(translate);
+// TODO: add an actual sample.
+console.info(translate);
 
 
 ```
