@@ -77,7 +77,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
     const stream = client
       .streamingTranslateSpeech()
       .on('error', e => {
-        if (e.code && e.code == 4) {
+        if (e.code && e.code === 4) {
           console.log('Streaming translation reached its deadline.');
         } else {
           console.log(e);
@@ -100,7 +100,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
         }
       });
 
-    var isFirst = true;
+    let isFirst = true;
     // Start recording and send microphone input to the Media Translation API
     recorder
       .record({

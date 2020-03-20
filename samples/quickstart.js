@@ -24,6 +24,7 @@ async function main() {
 
   async function quickstart() {
     const client = new SpeechTranslationServiceClient();
+    console.log(client);
   }
   quickstart();
   // [END media_translation_quickstart]
