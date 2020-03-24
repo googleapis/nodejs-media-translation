@@ -93,7 +93,7 @@ function main(filename, encoding, sourceLanguage, targetLanguage) {
       }
     });
 
-    // [END speech_transcribe_streaming]
+    // [END media_translation_translate_from_file]
   }
   translate_from_file();
 }
