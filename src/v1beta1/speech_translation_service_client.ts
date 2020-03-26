@@ -17,13 +17,7 @@
 // ** All changes to this file may be overwritten. **
 
 import * as gax from 'google-gax';
-import {
-  APICallback,
-  Callback,
-  CallOptions,
-  Descriptors,
-  ClientOptions,
-} from 'google-gax';
+import {APICallback, Callback, CallOptions, Descriptors, ClientOptions} from 'google-gax';
 import * as path from 'path';
 
 import * as protosTypes from '../../protos/protos';
@@ -37,12 +31,7 @@ const version = require('../../../package.json').version;
  * @memberof v1beta1
  */
 export class SpeechTranslationServiceClient {
-  private _descriptors: Descriptors = {
-    page: {},
-    stream: {},
-    longrunning: {},
-    batching: {},
-  };
+  private _descriptors: Descriptors = {page: {}, stream: {}, longrunning: {}, batching: {}};
   private _innerApiCalls: {[name: string]: Function};
   private _terminated = false;
   private _opts: ClientOptions;
@@ -81,14 +70,11 @@ export class SpeechTranslationServiceClient {
 
   constructor(opts?: ClientOptions) {
     // Ensure that options include the service address and port.
-    const staticMembers = this
-      .constructor as typeof SpeechTranslationServiceClient;
-    const servicePath =
-      opts && opts.servicePath
-        ? opts.servicePath
-        : opts && opts.apiEndpoint
-        ? opts.apiEndpoint
-        : staticMembers.servicePath;
+    const staticMembers = this.constructor as typeof SpeechTranslationServiceClient;
+    const servicePath = opts && opts.servicePath ?
+        opts.servicePath :
+        ((opts && opts.apiEndpoint) ? opts.apiEndpoint :
+                                      staticMembers.servicePath);
     const port = opts && opts.port ? opts.port : staticMembers.port;
 
     if (!opts) {
@@ -98,8 +84,8 @@ export class SpeechTranslationServiceClient {
     opts.port = opts.port || port;
     opts.clientConfig = opts.clientConfig || {};
 
-    const isBrowser = typeof window !== 'undefined';
-    if (isBrowser) {
+    const isBrowser = (typeof window !== 'undefined');
+    if (isBrowser){
       opts.fallback = true;
     }
     // If we are in browser, we are already using fallback because of the
@@ -109,18 +95,20 @@ export class SpeechTranslationServiceClient {
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
-    opts.scopes = (this
-      .constructor as typeof SpeechTranslationServiceClient).scopes;
+    opts.scopes = (this.constructor as typeof SpeechTranslationServiceClient).scopes;
     this._gaxGrpc = new this._gaxModule.GrpcClient(opts);
 
     // Save options to use in initialize() method.
     this._opts = opts;
 
     // Save the auth object to the client, for use by other methods.
-    this.auth = this._gaxGrpc.auth as gax.GoogleAuth;
+    this.auth = (this._gaxGrpc.auth as gax.GoogleAuth);
 
     // Determine the client header string.
-    const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
+    const clientHeader = [
+      `gax/${this._gaxModule.version}`,
+      `gapic/${version}`,
+    ];
     if (typeof process !== 'undefined' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
@@ -136,32 +124,23 @@ export class SpeechTranslationServiceClient {
     // For Node.js, pass the path to JSON proto file.
     // For browsers, pass the JSON content.
 
-    const nodejsProtoPath = path.join(
-      __dirname,
-      '..',
-      '..',
-      'protos',
-      'protos.json'
-    );
+    const nodejsProtoPath = path.join(__dirname, '..', '..', 'protos', 'protos.json');
     this._protos = this._gaxGrpc.loadProto(
-      opts.fallback ? require('../../protos/protos.json') : nodejsProtoPath
+      opts.fallback ?
+        require("../../protos/protos.json") :
+        nodejsProtoPath
     );
 
     // Some of the methods on this service provide streaming responses.
     // Provide descriptors for these.
     this._descriptors.stream = {
-      streamingTranslateSpeech: new this._gaxModule.StreamDescriptor(
-        gax.StreamType.BIDI_STREAMING
-      ),
+      streamingTranslateSpeech: new this._gaxModule.StreamDescriptor(gax.StreamType.BIDI_STREAMING)
     };
 
     // Put together the default options sent with requests.
     this._defaults = this._gaxGrpc.constructSettings(
-      'google.cloud.mediatranslation.v1beta1.SpeechTranslationService',
-      gapicConfig as gax.ClientConfig,
-      opts.clientConfig || {},
-      {'x-goog-api-client': clientHeader.join(' ')}
-    );
+        'google.cloud.mediatranslation.v1beta1.SpeechTranslationService', gapicConfig as gax.ClientConfig,
+        opts.clientConfig || {}, {'x-goog-api-client': clientHeader.join(' ')});
 
     // Set up a dictionary of "inner API calls"; the core implementation
     // of calling the API is handled in `google-gax`, with this code
@@ -189,19 +168,16 @@ export class SpeechTranslationServiceClient {
     // Put together the "service stub" for
     // google.cloud.mediatranslation.v1beta1.SpeechTranslationService.
     this.speechTranslationServiceStub = this._gaxGrpc.createStub(
-      this._opts.fallback
-        ? (this._protos as protobuf.Root).lookupService(
-            'google.cloud.mediatranslation.v1beta1.SpeechTranslationService'
-          )
-        : // tslint:disable-next-line no-any
-          (this._protos as any).google.cloud.mediatranslation.v1beta1
-            .SpeechTranslationService,
-      this._opts
-    ) as Promise<{[method: string]: Function}>;
+        this._opts.fallback ?
+          (this._protos as protobuf.Root).lookupService('google.cloud.mediatranslation.v1beta1.SpeechTranslationService') :
+          /* eslint-disable @typescript-eslint/no-explicit-any */
+          (this._protos as any).google.cloud.mediatranslation.v1beta1.SpeechTranslationService,
+        this._opts) as Promise<{[method: string]: Function}>;
 
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
-    const speechTranslationServiceStubMethods = ['streamingTranslateSpeech'];
+    const speechTranslationServiceStubMethods =
+        ['streamingTranslateSpeech'];
 
     for (const methodName of speechTranslationServiceStubMethods) {
       const innerCallPromise = this.speechTranslationServiceStub.then(
@@ -212,17 +188,16 @@ export class SpeechTranslationServiceClient {
           const func = stub[methodName];
           return func.apply(stub, args);
         },
-        (err: Error | null | undefined) => () => {
+        (err: Error|null|undefined) => () => {
           throw err;
-        }
-      );
+        });
 
       const apiCall = this._gaxModule.createApiCall(
         innerCallPromise,
         this._defaults[methodName],
         this._descriptors.page[methodName] ||
-          this._descriptors.stream[methodName] ||
-          this._descriptors.longrunning[methodName]
+            this._descriptors.stream[methodName] ||
+            this._descriptors.longrunning[methodName]
       );
 
       this._innerApiCalls[methodName] = (
@@ -264,7 +239,9 @@ export class SpeechTranslationServiceClient {
    * in this service.
    */
   static get scopes() {
-    return ['https://www.googleapis.com/auth/cloud-platform'];
+    return [
+      'https://www.googleapis.com/auth/cloud-platform'
+    ];
   }
 
   getProjectId(): Promise<string>;
@@ -274,9 +251,8 @@ export class SpeechTranslationServiceClient {
    * @param {function(Error, string)} callback - the callback to
    *   be called with the current project Id.
    */
-  getProjectId(
-    callback?: Callback<string, undefined, undefined>
-  ): Promise<string> | void {
+  getProjectId(callback?: Callback<string, undefined, undefined>):
+      Promise<string>|void {
     if (callback) {
       this.auth.getProjectId(callback);
       return;
@@ -288,21 +264,24 @@ export class SpeechTranslationServiceClient {
   // -- Service calls --
   // -------------------
 
-  /**
-   * Performs bidirectional streaming speech translation: receive results while
-   * sending audio. This method is only available via the gRPC API (not REST).
-   *
-   * @param {object} [options]
-   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
-   * @returns {Stream}
-   *   An object stream which is both readable and writable. It accepts objects
-   *   representing [StreamingTranslateSpeechRequest]{@link google.cloud.mediatranslation.v1beta1.StreamingTranslateSpeechRequest} for write() method, and
-   *   will emit objects representing [StreamingTranslateSpeechResponse]{@link google.cloud.mediatranslation.v1beta1.StreamingTranslateSpeechResponse} on 'data' event asynchronously.
-   */
-  streamingTranslateSpeech(options?: gax.CallOptions): gax.CancellableStream {
+/**
+ * Performs bidirectional streaming speech translation: receive results while
+ * sending audio. This method is only available via the gRPC API (not REST).
+ *
+ * @param {object} [options]
+ *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+ * @returns {Stream}
+ *   An object stream which is both readable and writable. It accepts objects
+ *   representing [StreamingTranslateSpeechRequest]{@link google.cloud.mediatranslation.v1beta1.StreamingTranslateSpeechRequest} for write() method, and
+ *   will emit objects representing [StreamingTranslateSpeechResponse]{@link google.cloud.mediatranslation.v1beta1.StreamingTranslateSpeechResponse} on 'data' event asynchronously.
+ */
+  streamingTranslateSpeech(
+      options?: gax.CallOptions):
+    gax.CancellableStream {
     this.initialize();
     return this._innerApiCalls.streamingTranslateSpeech(options);
   }
+
 
   /**
    * Terminate the GRPC channel and close the client.

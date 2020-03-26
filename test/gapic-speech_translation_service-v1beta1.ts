@@ -18,164 +18,131 @@
 
 import * as protosTypes from '../protos/protos';
 import * as assert from 'assert';
-import {describe, it} from 'mocha';
+import { describe, it } from 'mocha';
+/* eslint-disable @typescript-eslint/no-var-requires */
 const speechtranslationserviceModule = require('../src');
 
 import {PassThrough} from 'stream';
 
+
 const FAKE_STATUS_CODE = 1;
-class FakeError {
-  name: string;
-  message: string;
-  code: number;
-  constructor(n: number) {
-    this.name = 'fakeName';
-    this.message = 'fake message';
-    this.code = n;
-  }
+class FakeError{
+    name: string;
+    message: string;
+    code: number;
+    constructor(n: number){
+        this.name = 'fakeName';
+        this.message = 'fake message';
+        this.code = n;
+    }
 }
 const error = new FakeError(FAKE_STATUS_CODE);
 export interface Callback {
-  (err: FakeError | null, response?: {} | null): void;
+  (err: FakeError|null, response?: {} | null): void;
 }
 
-export class Operation {
-  constructor() {}
-  promise() {}
+export class Operation{
+    constructor(){};
+    promise() {};
 }
-function mockBidiStreamingGrpcMethod(
-  expectedRequest: {},
-  response: {} | null,
-  error: FakeError | null
-) {
-  return () => {
-    const mockStream = new PassThrough({
-      objectMode: true,
-      transform: (chunk: {}, enc: {}, callback: Callback) => {
-        assert.deepStrictEqual(chunk, expectedRequest);
-        if (error) {
-          callback(error);
-        } else {
-          callback(null, response);
-        }
-      },
-    });
-    return mockStream;
-  };
+function mockBidiStreamingGrpcMethod(expectedRequest: {}, response: {} | null, error: FakeError | null) {
+    return () => {
+        const mockStream = new PassThrough({
+          objectMode: true,
+          transform: (chunk: {}, enc: {}, callback: Callback) => {
+            assert.deepStrictEqual(chunk, expectedRequest);
+            if (error) {
+              callback(error);
+            }
+            else {
+              callback(null, response);
+            }
+          }
+        });
+        return mockStream;
+    }
 }
 describe('v1beta1.SpeechTranslationServiceClient', () => {
-  it('has servicePath', () => {
-    const servicePath =
-      speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient
-        .servicePath;
-    assert(servicePath);
-  });
-  it('has apiEndpoint', () => {
-    const apiEndpoint =
-      speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient
-        .apiEndpoint;
-    assert(apiEndpoint);
-  });
-  it('has port', () => {
-    const port =
-      speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient
-        .port;
-    assert(port);
-    assert(typeof port === 'number');
-  });
-  it('should create a client with no option', () => {
-    const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient();
-    assert(client);
-  });
-  it('should create a client with gRPC fallback', () => {
-    const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient(
-      {
-        fallback: true,
-      }
-    );
-    assert(client);
-  });
-  it('has initialize method and supports deferred initialization', async () => {
-    const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient(
-      {
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      }
-    );
-    assert.strictEqual(client.speechTranslationServiceStub, undefined);
-    await client.initialize();
-    assert(client.speechTranslationServiceStub);
-  });
-  it('has close method', () => {
-    const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient(
-      {
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      }
-    );
-    client.close();
-  });
-  describe('streamingTranslateSpeech', () => {
-    it('invokes streamingTranslateSpeech without error', done => {
-      const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient(
-        {
-          credentials: {client_email: 'bogus', private_key: 'bogus'},
-          projectId: 'bogus',
-        }
-      );
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.cloud.mediatranslation.v1beta1.IStreamingTranslateSpeechRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.streamingTranslateSpeech = mockBidiStreamingGrpcMethod(
-        request,
-        expectedResponse,
-        null
-      );
-      const stream = client
-        .streamingTranslateSpeech()
-        .on('data', (response: {}) => {
-          assert.deepStrictEqual(response, expectedResponse);
-          done();
-        })
-        .on('error', (err: FakeError) => {
-          done(err);
-        });
-      stream.write(request);
+    it('has servicePath', () => {
+        const servicePath = speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient.servicePath;
+        assert(servicePath);
     });
-    it('invokes streamingTranslateSpeech with error', done => {
-      const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient(
-        {
-          credentials: {client_email: 'bogus', private_key: 'bogus'},
-          projectId: 'bogus',
-        }
-      );
-      // Initialize client before mocking
-      client.initialize();
-      // Mock request
-      const request: protosTypes.google.cloud.mediatranslation.v1beta1.IStreamingTranslateSpeechRequest = {};
-      // Mock response
-      const expectedResponse = {};
-      // Mock gRPC layer
-      client._innerApiCalls.streamingTranslateSpeech = mockBidiStreamingGrpcMethod(
-        request,
-        null,
-        error
-      );
-      const stream = client
-        .streamingTranslateSpeech()
-        .on('data', () => {
-          assert.fail();
-        })
-        .on('error', (err: FakeError) => {
-          assert(err instanceof FakeError);
-          assert.strictEqual(err.code, FAKE_STATUS_CODE);
-          done();
-        });
-      stream.write(request);
+    it('has apiEndpoint', () => {
+        const apiEndpoint = speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient.apiEndpoint;
+        assert(apiEndpoint);
     });
-  });
+    it('has port', () => {
+        const port = speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient.port;
+        assert(port);
+        assert(typeof port === 'number');
+    });
+    it('should create a client with no option', () => {
+        const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient();
+        assert(client);
+    });
+    it('should create a client with gRPC fallback', () => {
+        const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient({
+            fallback: true,
+        });
+        assert(client);
+    });
+    it('has initialize method and supports deferred initialization', async () => {
+        const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient({
+            credentials: { client_email: 'bogus', private_key: 'bogus' },
+            projectId: 'bogus',
+        });
+        assert.strictEqual(client.speechTranslationServiceStub, undefined);
+        await client.initialize();
+        assert(client.speechTranslationServiceStub);
+    });
+    it('has close method', () => {
+        const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient({
+            credentials: { client_email: 'bogus', private_key: 'bogus' },
+            projectId: 'bogus',
+        });
+        client.close();
+    });
+    describe('streamingTranslateSpeech', () => {
+        it('invokes streamingTranslateSpeech without error', done => {
+            const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.cloud.mediatranslation.v1beta1.IStreamingTranslateSpeechRequest = {};
+            // Mock response
+            const expectedResponse = {};
+            // Mock gRPC layer
+            client._innerApiCalls.streamingTranslateSpeech = mockBidiStreamingGrpcMethod(request, expectedResponse, null);
+            const stream = client.streamingTranslateSpeech().on('data', (response: {}) =>{
+                assert.deepStrictEqual(response, expectedResponse);
+                done();
+            }).on('error', (err: FakeError) => {
+                done(err);
+            });
+            stream.write(request);
+        });
+        it('invokes streamingTranslateSpeech with error', done => {
+            const client = new speechtranslationserviceModule.v1beta1.SpeechTranslationServiceClient({
+                credentials: {client_email: 'bogus', private_key: 'bogus'},
+                projectId: 'bogus',
+            });
+            // Initialize client before mocking
+            client.initialize();
+            // Mock request
+            const request: protosTypes.google.cloud.mediatranslation.v1beta1.IStreamingTranslateSpeechRequest = {};
+            // Mock gRPC layer
+            client._innerApiCalls.streamingTranslateSpeech = mockBidiStreamingGrpcMethod(request, null, error);
+            const stream = client.streamingTranslateSpeech().on('data', () =>{
+                assert.fail();
+            }).on('error', (err: FakeError) => {
+                assert(err instanceof FakeError);
+                assert.strictEqual(err.code, FAKE_STATUS_CODE);
+                done();
+            });
+            stream.write(request);
+        });
+    });
 });
