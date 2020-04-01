@@ -55,18 +55,76 @@ npm install @google-cloud/media-translation
 ### Using the client library
 
 ```javascript
-// Imports the Google Cloud client library
+const fs = require('fs');
+
+// Imports the CLoud Media Translation client library
 const {
   SpeechTranslationServiceClient,
 } = require('@google-cloud/media-translation');
 
 // Creates a client
-const translate = new SpeechTranslationServiceClient();
+const client = new SpeechTranslationServiceClient();
 
-// parent = 'projects/my-project', // Project to list dashboards for.
+async function quickstart() {
+  /**
+   * TODO(developer): Uncomment the following lines before running the sample.
+   */
+  // const filename = 'Local path to audio file, e.g. /path/to/audio.raw';
+  // const encoding = 'Encoding of the audio file, e.g. LINEAR16';
+  // const sourceLanguage = 'BCP-47 source language code, e.g. en-US';
+  // const targetLangauge = 'BCP-47 target language code, e.g. es-ES';
 
-// TODO: add an actual sample.
-console.info(translate);
+  const config = {
+    audioConfig: {
+      audioEncoding: encoding,
+      sourceLanguageCode: sourceLanguage,
+      targetLanguageCode: targetLanguage,
+    },
+  };
+
+  // First request needs to have only a streaming config, no data.
+  const initialRequest = {
+    streamingConfig: config,
+    audioContent: null,
+  };
+
+  const readStream = fs.createReadStream(filename, {
+    highWaterMark: 4096,
+    encoding: 'base64',
+  });
+
+  const chunks = [];
+  readStream
+    .on('data', chunk => {
+      const request = {
+        streamingConfig: config,
+        audioContent: chunk.toString(),
+      };
+      chunks.push(request);
+    })
+    .on('close', () => {
+      // Config-only request should be first in stream of requests
+      stream.write(initialRequest);
+      for (let i = 0; i < chunks.length; i++) {
+        stream.write(chunks[i]);
+      }
+      stream.end();
+    });
+
+  const stream = client.streamingTranslateSpeech().on('data', response => {
+    const {result} = response;
+    if (result.textTranslationResult.isFinal) {
+      console.log(
+        `\nFinal translation: ${result.textTranslationResult.translation}`
+      );
+      console.log(`Final recognition result: ${result.recognitionResult}`);
+    } else {
+      console.log(
+        `\nPartial translation: ${result.textTranslationResult.translation}`
+      );
+      console.log(`Partial recognition result: ${result.recognitionResult}`);
+    }
+  });
 
 
 ```
@@ -81,32 +139,13 @@ has instructions for running the samples.
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
 | Quickstart | [source code](https://github.com/googleapis/nodejs-media-translation/blob/master/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-media-translation&page=editor&open_in_editor=samples/quickstart.js,samples/README.md) |
+| Translate_from_file | [source code](https://github.com/googleapis/nodejs-media-translation/blob/master/samples/translate_from_file.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-media-translation&page=editor&open_in_editor=samples/translate_from_file.js,samples/README.md) |
+| Translate_from_mic | [source code](https://github.com/googleapis/nodejs-media-translation/blob/master/samples/translate_from_mic.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-media-translation&page=editor&open_in_editor=samples/translate_from_mic.js,samples/README.md) |
 
 
 
 The [Cloud Media Translation Node.js Client API Reference][client-docs] documentation
 also contains samples.
-
-## Supported Node.js Versions
-
-Our client libraries follow the [Node.js release schedule](https://nodejs.org/en/about/releases/).
-Libraries are compatible with all current _active_ and _maintenance_ versions of
-Node.js.
-
-Client libraries targetting some end-of-life versions of Node.js are available, and
-can be installed via npm [dist-tags](https://docs.npmjs.com/cli/dist-tag).
-The dist-tags follow the naming convention `legacy-(version)`.
-
-_Legacy Node.js versions are supported as a best effort:_
-
-* Legacy versions will not be tested in continuous integration.
-* Some security patches may not be able to be backported.
-* Dependencies will not be kept up-to-date, and features will not be backported.
-
-#### Legacy tags available
-
-* `legacy-8`: install client libraries from this dist-tag for versions
-  compatible with Node.js 8.
 
 ## Versioning
 
