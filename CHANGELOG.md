@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.0.1](https://www.github.com/googleapis/nodejs-media-translation/compare/v2.0.0...v2.0.1) (2020-04-12)
+
+
+### Bug Fixes
+
+* remove eslint, update gax, fix generated protos, run the generator ([#24](https://www.github.com/googleapis/nodejs-media-translation/issues/24)) ([3aca62a](https://www.github.com/googleapis/nodejs-media-translation/commit/3aca62aed3a4e49e4892f9ad29c3d0166c57fa56))
+
 ## [2.0.0](https://www.github.com/googleapis/nodejs-media-translation/compare/v1.0.0...v2.0.0) (2020-04-05)
 
 
