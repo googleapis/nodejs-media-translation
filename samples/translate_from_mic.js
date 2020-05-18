@@ -121,8 +121,6 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
         };
         stream.write(request);
       })
-      .on('error', console.log)
-      .pipe(stream);
 
     console.log('Listening, press Ctrl+C to stop.');
   }
