@@ -39,12 +39,30 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
 
   // [START media_translation_translate_from_mic]
 
+  // Allow user input from terminal
+  const readline = require('readline');
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  function doTranslationLoop() {
+    rl.question('Press any key to translate or \'q\' to quit: ', (answer) => {
+      if (answer.toLowerCase() === 'q') {
+        process.exit(0);
+      } else {
+        translateFromMicrophone();
+      }
+    });
+  }
+
   // Node-Record-lpcm16
   const recorder = require('node-record-lpcm16');
 
   // Imports the Cloud Media Translation client library
   const {
-    SpeechTranslationServiceClient,
+    SpeechTranslationServiceClient
   } = require('@google-cloud/media-translation');
 
   // Creates a client
@@ -58,6 +76,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
     //const sampleRateHertz = 16000;
     //const sourceLanguage = 'Language to translate from, as BCP-47 locale';
     //const targetLanguage = 'Language to translate to, as BCP-47 locale';
+    console.log('Begin speaking ...');
 
     const config = {
       audioConfig: {
@@ -65,6 +84,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
         sourceLanguageCode: sourceLanguage,
         targetLanguageCode: targetLanguage,
       },
+      singleUtterance: true,
     };
 
     // First request needs to have only a streaming config, no data.
@@ -73,6 +93,8 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
       audioContent: null,
     };
 
+    let currentTranslation = '';
+    let currentRecognition = '';
     // Create a recognize stream
     const stream = client
       .streamingTranslateSpeech()
@@ -84,32 +106,32 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
         }
       })
       .on('data', response => {
-        const {result} = response;
-        if (result.textTranslationResult.isFinal) {
+        const {result, speechEventType} = response;
+        if (speechEventType == 'END_OF_SINGLE_UTTERANCE') {
           console.log(
-            `\nFinal translation: ${result.textTranslationResult.translation}`
+            `\nFinal translation: ${currentTranslation}`
           );
-          console.log(`Final recognition result: ${result.recognitionResult}`);
+          console.log(`Final recognition result: ${currentRecognition}`);
+
+          stream.destroy();
+          recording.stop();
         } else {
-          console.log(
-            `\nPartial translation: ${result.textTranslationResult.translation}`
-          );
-          console.log(
-            `Partial recognition result: ${result.recognitionResult}`
-          );
+          currentTranslation = result.textTranslationResult.translation;
+          currentRecognition = result.recognitionResult;
+          console.log(`\nPartial translation: ${currentTranslation}`);
+          console.log(`Partial recognition result: ${currentRecognition}`);
         }
       });
 
     let isFirst = true;
     // Start recording and send microphone input to the Media Translation API
-    recorder
-      .record({
-        sampleRateHertz: sampleRateHertz,
-        threshold: 0, //silence threshold
-        recordProgram: 'rec',
-        silence: '5.0', //seconds of silence before ending
-      })
-      .stream()
+    const recording = recorder.record({
+      sampleRateHertz: sampleRateHertz,
+      threshold: 0, //silence threshold
+      recordProgram: 'rec',
+      silence: '5.0', //seconds of silence before ending
+    });
+    recording.stream()
       .on('data', chunk => {
         if (isFirst) {
           stream.write(initialRequest);
@@ -120,13 +142,13 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
           audioContent: chunk.toString('base64'),
         };
         stream.write(request);
+      })
+      .on('close', e => {
+        doTranslationLoop();
       });
-
-    console.log('Listening, press Ctrl+C to stop.');
   }
 
-  translateFromMicrophone();
-
+  doTranslationLoop();
   // [END media_translation_translate_from_mic]
 }
 main(...process.argv.slice(2));
