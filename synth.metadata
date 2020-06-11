@@ -3,23 +3,15 @@
     {
       "git": {
         "name": ".",
-        "remote": "https://github.com/googleapis/nodejs-media-translation.git",
-        "sha": "2e5065b0ecb6c38148ec31bf8966617bf7d024d9"
-      }
-    },
-    {
-      "git": {
-        "name": "googleapis",
-        "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "83816bb3093686a28af2891db5b7506614a820b1",
-        "internalRef": "310509915"
+        "remote": "git@github.com:googleapis/nodejs-media-translation.git",
+        "sha": "df3adcce7b4a2ebe827c1b57c81e6599142c2f1b"
       }
     },
     {
       "git": {
         "name": "synthtool",
         "remote": "https://github.com/googleapis/synthtool.git",
-        "sha": "e7034945fbdc0e79d3c57f6e299e5c90b0f11469"
+        "sha": "a0ee80e0492a03b9b2bfefb5cca7eaf17bf10438"
       }
     }
   ],
