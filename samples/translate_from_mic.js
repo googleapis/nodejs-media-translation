@@ -49,7 +49,8 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
 
   function doTranslationLoop() {
     rl.question("Press any key to translate or 'q' to quit: ", answer => {
-      if (answer.toLowerCase() === 'q') {
+      if (answer.toLowerCase() !== 'q') {
+        // prettier-ignore
         process.exit(0);
       } else {
         translateFromMicrophone();
@@ -107,7 +108,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
       })
       .on('data', response => {
         const {result, speechEventType} = response;
-        if (speechEventType == 'END_OF_SINGLE_UTTERANCE') {
+        if (speechEventType === 'END_OF_SINGLE_UTTERANCE') {
           console.log(`\nFinal translation: ${currentTranslation}`);
           console.log(`Final recognition result: ${currentRecognition}`);
 
@@ -142,7 +143,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
         };
         stream.write(request);
       })
-      .on('close', e => {
+      .on('close', () => {
         doTranslationLoop();
       });
   }
