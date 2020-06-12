@@ -49,8 +49,8 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
 
   function doTranslationLoop() {
     rl.question("Press any key to translate or 'q' to quit: ", answer => {
-      if (answer.toLowerCase() !== 'q') {
-        // prettier-ignore
+      if (answer.toLowerCase() === 'q') {
+        // eslint-disable-line no-process-exit
         process.exit(0);
       } else {
         translateFromMicrophone();
