@@ -44,11 +44,11 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
 
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   function doTranslationLoop() {
-    rl.question('Press any key to translate or \'q\' to quit: ', (answer) => {
+    rl.question("Press any key to translate or 'q' to quit: ", answer => {
       if (answer.toLowerCase() === 'q') {
         process.exit(0);
       } else {
@@ -62,7 +62,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
 
   // Imports the Cloud Media Translation client library
   const {
-    SpeechTranslationServiceClient
+    SpeechTranslationServiceClient,
   } = require('@google-cloud/media-translation');
 
   // Creates a client
@@ -108,9 +108,7 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
       .on('data', response => {
         const {result, speechEventType} = response;
         if (speechEventType == 'END_OF_SINGLE_UTTERANCE') {
-          console.log(
-            `\nFinal translation: ${currentTranslation}`
-          );
+          console.log(`\nFinal translation: ${currentTranslation}`);
           console.log(`Final recognition result: ${currentRecognition}`);
 
           stream.destroy();
@@ -131,7 +129,8 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
       recordProgram: 'rec',
       silence: '5.0', //seconds of silence before ending
     });
-    recording.stream()
+    recording
+      .stream()
       .on('data', chunk => {
         if (isFirst) {
           stream.write(initialRequest);
