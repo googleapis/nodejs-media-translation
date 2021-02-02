@@ -140,9 +140,9 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
           streamingConfig: config,
           audioContent: chunk.toString('base64'),
         };
-	if (!stream.destroyed) {
+        if (!stream.destroyed) {
           stream.write(request);
-	}
+        }
       })
       .on('close', () => {
         doTranslationLoop();
