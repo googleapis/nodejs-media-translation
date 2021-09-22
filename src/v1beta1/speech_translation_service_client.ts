@@ -311,6 +311,10 @@ export class SpeechTranslationServiceClient {
    * stream.on('end', () => { ... });
    * stream.write(request);
    * stream.end();
+   *
+   * @example <caption>include:samples/generated/v1beta1/speech_translation_service.streaming_translate_speech.js</caption>
+   * region_tag:mediatranslation_streaming_translate_speech_sample
+   *
    */
   streamingTranslateSpeech(options?: CallOptions): gax.CancellableStream {
     this.initialize();
