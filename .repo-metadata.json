@@ -12,5 +12,5 @@
   "name": "mediatranslation",
   "issue_tracker": "https://issuetracker.google.com/savedsearches/559749",
   "api_shortname": "mediatranslation",
-  "library_type": ""
+  "library_type": "GAPIC_AUTO"
 }
