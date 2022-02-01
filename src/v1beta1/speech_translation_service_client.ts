@@ -310,7 +310,7 @@ export class SpeechTranslationServiceClient {
    */
   streamingTranslateSpeech(options?: CallOptions): gax.CancellableStream {
     this.initialize();
-    return this.innerApiCalls.streamingTranslateSpeech(options);
+    return this.innerApiCalls.streamingTranslateSpeech(null, options);
   }
 
   /**
